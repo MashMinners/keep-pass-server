@@ -20,6 +20,7 @@
         "ramsey/uuid": "^4.7",
         "tecnickcom/tcpdf": "^6.6",
         "phpoffice/phpspreadsheet": "^5.0",
-      "ext-simplexml": "*"
+      "ext-simplexml": "*",
+      "ext-sodium": "*"
     }
 }
