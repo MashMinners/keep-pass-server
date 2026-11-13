@@ -13,25 +13,25 @@ class PasswordRetrieval
         $this->pdo = $connector::connect();
     }
 
-    private function identify(array $credentials){
+    private function identify(Credentials $credentials){
         //Идентифициоруем пользователя
         $query = ("SELECT * FROM cmis_accounts WHERE cmis_account_name = :accountName");
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([
-            'accountName' => $credentials['accountName']
+            'accountName' => $credentials->accountName
         ]);
         if ($stmt->rowCount() > 0) {
-            return $stmt->fetch();
+            return AccountFactory::create($stmt->fetch());
         }
         return false;
     }
 
-    public function retrieve(array $credentials){
+    public function retrieve(Credentials $credentials){
         if ($account = $this->identify($credentials)){
             $key = Keygen::get('configs/key');
-            $decryptedPassword = Sodium::decryptPassword($account['cmis_account_current_password'], $key);
-            if ($credentials['password'] === $decryptedPassword){
-                return $account['cmis_account_new_password'];
+            $decryptedPassword = Sodium::decryptPassword($account->cmisAccountCurrentPassword, $key);
+            if ($credentials->accountPassword === $decryptedPassword){
+                return $account->cmisAccountNewPassword;
             }
         }
     }

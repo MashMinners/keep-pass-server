@@ -4,10 +4,9 @@ namespace Application\System\PasswordEncryption;
 
 class Keygen
 {
-    public static function generate(){
+    public static function generate($keyPath = 'configs/key'){
         $key = sodium_crypto_secretbox_keygen();
         $keyForStorage = sodium_bin2hex($key);
-        $keyPath = 'configs/key';
         file_put_contents($keyPath, $keyForStorage);
         return $key;
     }
