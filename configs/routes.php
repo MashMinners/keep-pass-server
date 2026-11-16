@@ -8,3 +8,4 @@ $this->get('app/cmis/retrieve', 'Application\Main\CMIS\Controllers\PasswordRetri
 
 ]);
 $this->get('app/cmis/keygen/generate', 'Application\Main\CMIS\Controllers\KeygenGeneratorController::generate');
+$this->get('app/accounts/create/from-excel', 'Application\Main\CMIS\Controllers\AccountManagerController::createFromExcelTable');
