@@ -4,7 +4,7 @@ namespace Application\Main\CMIS\Models;
 
 use Engine\Exceptions\UnknownPropertyException;
 
-class Credentials
+class Credentials implements \JsonSerializable
 {
     private string $accountName;
     private string $accountPassword;
@@ -22,5 +22,13 @@ class Credentials
             return $this->$property;
         }
         throw new UnknownPropertyException("Свойство ".$property." не найдено в классе ".get_class($this));
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'accountName' => $this->accountName,
+            'accountPassword' => $this->accountPassword,
+        ];
     }
 }
