@@ -14,3 +14,4 @@ $this->post('app/accounts/create/from-app', 'Application\Main\CMIS\Controllers\A
         CredentialsValidatorMiddleware::class,
 
     ]);
+$this->get('app/accounts/passwords/generate/for-all', 'Application\Main\CMIS\Controllers\PasswordGeneratorController::generateForAll');
