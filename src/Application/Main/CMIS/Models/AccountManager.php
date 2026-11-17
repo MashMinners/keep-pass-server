@@ -25,9 +25,10 @@ class AccountManager
                    VALUES ");
         $query .= '(';
         foreach ($accounts AS $account){
-            $encryptedPassword = Sodium::encryptPassword($account['cmis_account_current_password'], $key);
-            $account['cmisAccountId'] = Uuid::uuid4()->toString();
-            $query .= $account['cmisAccountId'].','.$account['cmis_account_name'].','.$encryptedPassword.','.null;
+            $accountPassword = Sodium::encryptPassword($account['accountPassword'], $key);
+            $accountId= Uuid::uuid4()->toString();
+            $accountName = $account['accountName'];
+            $query .= "'".$accountId."', '".$accountName."', '".$accountPassword."', ''";
         }
         $query .= ')';
         $stmt = $this->pdo->prepare($query);

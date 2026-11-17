@@ -24,8 +24,11 @@ class AccountManagerController
         return new JsonResponse('Количество вставленных записей '.count($accountsFromExcel));
     }
 
-    public function create(ServerRequestInterface $request) : ResponseInterface {
-
+    public function createFromApp(ServerRequestInterface $request) : ResponseInterface {
+        $credentials = $request->getAttribute('Credentials');
+        //Таким образом я получу [0 => ['accountName' = 'Name', 'accountPassword' = 'password']]
+        $this->manager->create([$credentials->jsonSerialize()]);
+        return new JsonResponse("Аккаунт $credentials->accountName создан");
     }
 
 }
