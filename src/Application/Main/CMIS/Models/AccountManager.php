@@ -21,14 +21,15 @@ class AccountManager
      */
     public function create(array $accounts) : bool{
         $key = Keygen::get('configs/key');
-        $query = ("INSERT INTO cmis_accounts (cmis_account_id, cmis_account_name, cmis_account_current_password, cmis_account_new_password)
+        $query = ("INSERT INTO cmis_accounts (cmis_account_id, cmis_account_name, cmis_account_current_password, cmis_account_new_password, cmis_account_owner_real_name)
                    VALUES ");
         $query .= '(';
         foreach ($accounts AS $account){
-            $accountPassword = Sodium::encryptPassword($account['accountPassword'], $key);
+            $accountPassword = Sodium::encryptPassword($account['cmisAccountPassword'], $key);
             $accountId= Uuid::uuid4()->toString();
-            $accountName = $account['accountName'];
-            $query .= "'".$accountId."', '".$accountName."', '".$accountPassword."', ''";
+            $accountName = $account['cmisAccountName'];
+            $accountOwnerRealName = $account['cmisAccountOwnerRealName'];
+            $query .= "'".$accountId."', '".$accountName."', '".$accountPassword."', '','".$accountOwnerRealName."'";
         }
         $query .= ')';
         $stmt = $this->pdo->prepare($query);

@@ -11,7 +11,6 @@ class PasswordGenerator
     public function __construct(IConnector $connector){
         $this->pdo = $connector::connect();
     }
-
     /**
      * Цель простая, получить все даныне об аккаунтах данной системы
      * Далее каждое поле
@@ -68,7 +67,7 @@ class PasswordGenerator
         }
         return Sodium::encryptPassword($newPassword, $key);
     }
-    private function generateNewPasswords(array $accounts) : array {
+    private function getAccountsWithNewPasswords(array $accounts) : array {
         $newPasswords = [];
         $i = 0;
         foreach ($accounts AS $row){
@@ -79,22 +78,14 @@ class PasswordGenerator
         }
         return $newPasswords;
     }
-    public function generateForAll(){
+    private function updateNewPasswords(array $accounts) : array{
         $key = Keygen::get('configs/key');
-        //Получаю все данные о текущих параметрах
-        $accountsData = $this->getAllAccounts();
-        //В соответсвия с каждым ID генерируется новый пароль, там же он и шифруется
-        $accounts = $this->generateNewPasswords($accountsData);
-        if (empty($accounts)) {
-            return true;
-        }
         $cases   = [];
         $inList  = [];
         $params  = [];
         $credentials = [];
         $i = 0;
         foreach ($accounts as $account){
-            //$account->jsonSerialize();//$accountId => $newPassword) {
             $cases[]                  = "WHEN :id_$i THEN :pwd_$i";
             $inList[]                 = ":in_id_$i";   // отдельное имя — чтобы не дублировать параметр
             $params["id_$i"]          = $account->cmisAccountId;
@@ -110,6 +101,15 @@ class PasswordGenerator
         WHERE cmis_account_id IN (" . implode(',', $inList) . ")";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute($params);
+        return $credentials;
+    }
+    public function generateForAll(){
+        //Получаю все данные о текущих параметрах
+        $accountsData = $this->getAllAccounts();
+        //В соответсвия с каждым ID генерируется новый пароль, там же он и шифруется
+        $accounts = $this->getAccountsWithNewPasswords($accountsData);
+        //Обновляю пароль для аккаунтов
+        $credentials = $this->updateNewPasswords($accounts);
         return  $credentials;
     }
 

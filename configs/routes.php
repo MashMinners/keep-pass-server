@@ -1,5 +1,6 @@
 <?php
 #СБОР ОТЗЫВОВ В ПРИЛОЖЕНИИ
+use Application\Main\CMIS\Middlewares\CreateAccountDTOValidatorMiddleware;
 use Application\Main\CMIS\Middlewares\CredentialsValidatorMiddleware;
 
 $this->get('app/cmis/retrieve', 'Application\Main\CMIS\Controllers\PasswordRetrievalController::retrieve')
@@ -11,7 +12,7 @@ $this->get('app/cmis/keygen/generate', 'Application\Main\CMIS\Controllers\Keygen
 $this->get('app/accounts/create/from-excel', 'Application\Main\CMIS\Controllers\AccountManagerController::createFromExcelTable');
 $this->post('app/accounts/create/from-app', 'Application\Main\CMIS\Controllers\AccountManagerController::createFromApp')
     ->lazyMiddlewares([
-        CredentialsValidatorMiddleware::class,
+        CreateAccountDTOValidatorMiddleware::class,
 
     ]);
 $this->get('app/accounts/passwords/generate/for-all', 'Application\Main\CMIS\Controllers\PasswordGeneratorController::generateForAll');
