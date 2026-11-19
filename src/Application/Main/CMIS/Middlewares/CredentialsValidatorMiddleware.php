@@ -22,7 +22,7 @@ class CredentialsValidatorMiddleware implements MiddlewareInterface
     private function validateUserName() : void
     {
         if (!empty($accountName = $this->credentials->accountName)){
-            if (!preg_match("/^[a-zA-Z0-9]+$/", $accountName)){
+            if (!preg_match("/^[a-zA-Z0-9_]+$/", $accountName)){
                 $this->errors->incorrectCharacters('UserName');
             }
         }else{
