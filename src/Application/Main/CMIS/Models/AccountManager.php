@@ -43,10 +43,40 @@ class AccountManager
 
     }
 
-    public function read(string $id){
+    /**
+     * Получить доступ к аккаунту по его Id
+     * @param string $id
+     * @return array
+     */
+    public function getById(string $id) : array{
+        $query = ("SELECT * FROM cmis_accounts WHERE cmis_account_id = :id");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'id' => $id
+        ]);
+        return $stmt->fetchAll();
 
     }
 
+    /**
+     * Стандартный поиск по имени аккаунта
+     * @param string $accountName
+     * @return array
+     */
+    public function getByAccountName(string $accountName) : array {
+        //Идентифициоруем пользователя
+        $query = ("SELECT * FROM cmis_accounts WHERE cmis_account_name = :accountName");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'accountName' => $accountName
+        ]);
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Получить все данные обо всех аккаунтах
+     * @return array|false
+     */
     public function readAll(){
         $query = ("SELECT * FROM cmis_accounts");
         $stmt = $this->pdo->prepare($query);
@@ -69,14 +99,14 @@ class AccountManager
 
     }
 
-    /*
+    /**
      * Обновляет учетные записи на основе массива с их ID
      */
     public function update(array $accounts){
 
     }
 
-    /*
+    /**
      * Удаляет от 1-го до нескольких аккаунтов из БД на основе их (его) ID
      */
     public function delete(string $accounts){
