@@ -3,6 +3,7 @@
 namespace Application\Main\CMIS\Controllers;
 
 use Application\Main\CMIS\Models\AccountManager;
+use Application\Main\CMIS\Models\ExcelParser;
 use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,8 +20,16 @@ class AccountManagerController
          * 2. Сформировать массив
          * 3. Передать в метот вставки
          */
-        $accountsFromExcel = [];
-        $result = $this->manager->create($accountsFromExcel);
+        $accountsFromExcel = (new ExcelParser())->parseExcel(['storage/accounts.xlsx'], 'A2');
+        $namedKeys = [];
+        $i = 0;
+        foreach ($accountsFromExcel AS $account){
+            $namedKeys[$i]['cmisAccountName'] = $account['A'];
+            $namedKeys[$i]['cmisAccountPassword'] = $account['B'];
+            $namedKeys[$i]['cmisAccountOwnerRealName'] = $account['C'];
+            $i++;
+        }
+        $result = $this->manager->create($namedKeys);
         return new JsonResponse('Количество вставленных записей '.count($accountsFromExcel));
     }
 
