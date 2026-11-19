@@ -26,11 +26,12 @@ class AccountManager
                    VALUES ");
         foreach ($accounts AS $account){
             $query .= '(';
-            $accountPassword = Sodium::encryptPassword($account['cmisAccountPassword'], $key);
-            $accountId= Uuid::uuid4()->toString();
-            $accountName = $account['cmisAccountName'];
-            $accountOwnerRealName = $account['cmisAccountOwnerRealName'];
-            $query .= "'".$accountId."', '".$accountName."', '".$accountPassword."', '','".$accountOwnerRealName."'";
+            $accountPassword = StringFormatter::wrapInQuotes(Sodium::encryptPassword($account['cmisAccountPassword'], $key));
+            $accountId= StringFormatter::wrapInQuotes(Uuid::uuid4()->toString());
+            $accountName = StringFormatter::wrapInQuotes($account['cmisAccountName']);
+            $accountOwnerRealName = StringFormatter::wrapInQuotes($account['cmisAccountOwnerRealName']);
+            //$query .= "'".$accountId."', '".$accountName."', '".$accountPassword."', '','".$accountOwnerRealName."'";
+            $query .= $accountId.', '.$accountName.', '.$accountPassword.", '', ".$accountOwnerRealName;
             $query .= '),';
         }
         $query = preg_replace('/,\s*$/', '', $query);
@@ -56,12 +57,12 @@ class AccountManager
     /*
      * Удаляет от 1-го до нескольких аккаунтов из БД на основе их (его) ID
      */
-    public function delete(array $accounts){
-        $IDs = json_decode($IDs);
-        $query = ("DELETE FROM isa_personnel WHERE personnel_id IN");
+    public function delete(string $accounts){
+        $accounts = json_decode($accounts);
+        $query = ("DELETE FROM cmis_accounts WHERE cmis_account_id IN");
         $query .= "(";
-        foreach ($IDs->personnelId as $key => $value){
-            $query .= StringFormatter::wrapInQuotes($value)." ,";
+        foreach ($accounts->accountsIDs as $accountId){
+            $query .= StringFormatter::wrapInQuotes($accountId)." ,";
         }
         $query =  mb_substr($query, 0, -1);
         $query .= ")";

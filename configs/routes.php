@@ -16,3 +16,4 @@ $this->post('app/accounts/create/from-app', 'Application\Main\CMIS\Controllers\A
 
     ]);
 $this->get('app/accounts/passwords/generate/for-all', 'Application\Main\CMIS\Controllers\PasswordGeneratorController::generateForAll');
+$this->delete('app/accounts/delete', 'Application\Main\CMIS\Controllers\AccountManagerController::delete');

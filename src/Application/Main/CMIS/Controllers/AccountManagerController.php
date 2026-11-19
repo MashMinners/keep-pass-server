@@ -41,7 +41,10 @@ class AccountManagerController
     }
 
     public function delete(ServerRequestInterface $request) : ResponseInterface {
-
+        $accounts = file_get_contents('php://input');
+        $result = $this->manager->delete($accounts);
+        $response = new JsonResponse($result);
+        return $response;
     }
 
 }
