@@ -42,10 +42,10 @@ class Account implements \JsonSerializable
         $json = file_get_contents('php://input');
         $credentials = json_decode($json);
         $this->cmisAccountId = $credentials->cmisAccountId ?? null;
-        $this->cmisAccountName = $credentials->cmisAccountName;
-        $this->cmisAccountCurrentPassword = $credentials->cmisAccountCurrentPassword;
+        $this->cmisAccountName = $credentials->cmisAccountName ?? null;
+        $this->cmisAccountCurrentPassword = $credentials->cmisAccountCurrentPassword ?? null;
         $this->cmisAccountNewPassword = $credentials->cmisAccountNewPassword ?? null;
-        $this->cmisAccountOwnerRealName = $credentials->cmisAccountOwnerRealName;
+        $this->cmisAccountOwnerRealName = $credentials->cmisAccountOwnerRealName ?? null;
     }
 
 }
