@@ -40,6 +40,11 @@ class AccountManagerController
         return new JsonResponse("Аккаунт $credentials->cmisAccountName создан");
     }
 
+    public function readAll(ServerRequestInterface $request) : ResponseInterface {
+        $result = $this->manager->readAll();
+        return new JsonResponse($result);
+    }
+
     public function delete(ServerRequestInterface $request) : ResponseInterface {
         $accounts = file_get_contents('php://input');
         $result = $this->manager->delete($accounts);

@@ -47,6 +47,28 @@ class AccountManager
 
     }
 
+    public function readAll(){
+        $query = ("SELECT * FROM cmis_accounts");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        $result = $stmt->fetchAll();
+        if (!empty($stmt)){
+            $key = Keygen::get('configs/key');
+            $i = 0;
+            foreach ($result AS $account){
+                $accounts[$i]['cmisAccountId'] = $account['cmis_account_id'];
+                $accounts[$i]['cmisAccountName'] = $account['cmis_account_name'];
+                $accounts[$i]['cmisAccountCurrentPassword'] = Sodium::decryptPassword($account['cmis_account_current_password'], $key);
+                $accounts[$i]['cmisAccountNewPassword'] = Sodium::decryptPassword($account['cmis_account_new_password'], $key);
+                $accounts[$i]['cmisAccountOwnerRealName'] = $account['cmis_account_owner_real_name'];
+                $i++;
+            }
+            return $accounts;
+        }
+        return $result;
+
+    }
+
     /*
      * Обновляет учетные записи на основе массива с их ID
      */
