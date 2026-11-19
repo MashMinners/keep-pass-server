@@ -34,7 +34,7 @@ class AccountManagerController
     }
 
     public function createFromApp(ServerRequestInterface $request) : ResponseInterface {
-        $credentials = $request->getAttribute('CreateAccountDTO');
+        $credentials = $request->getAttribute('Account');
         //Таким образом я получу [0 => ['accountName' = 'Name', 'accountPassword' = 'password']]
         $this->manager->create([$credentials->jsonSerialize()]);
         return new JsonResponse("Аккаунт $credentials->cmisAccountName создан");
@@ -43,6 +43,10 @@ class AccountManagerController
     public function readAll(ServerRequestInterface $request) : ResponseInterface {
         $result = $this->manager->readAll();
         return new JsonResponse($result);
+    }
+
+    public function edit(ServerRequestInterface $request) : ResponseInterface {
+
     }
 
     public function delete(ServerRequestInterface $request) : ResponseInterface {

@@ -26,7 +26,7 @@ class AccountManager
                    VALUES ");
         foreach ($accounts AS $account){
             $query .= '(';
-            $accountPassword = StringFormatter::wrapInQuotes(Sodium::encryptPassword($account['cmisAccountPassword'], $key));
+            $accountPassword = StringFormatter::wrapInQuotes(Sodium::encryptPassword($account['cmisAccountCurrentPassword'], $key));
             $accountId= StringFormatter::wrapInQuotes(Uuid::uuid4()->toString());
             $accountName = StringFormatter::wrapInQuotes($account['cmisAccountName']);
             $accountOwnerRealName = StringFormatter::wrapInQuotes($account['cmisAccountOwnerRealName']);
@@ -102,8 +102,23 @@ class AccountManager
     /**
      * Обновляет учетные записи на основе массива с их ID
      */
-    public function update(array $accounts){
-
+    public function update(Account $account) : string{
+        $query = ("UPDATE cmis_accounts
+                   SET cmis_account_name = :cmisAccountName,
+                       cmis_account_current_password = :cmisAccountCurrentPassword,
+                       cmis_account_new_password = :cmisAccountNewPassword,
+                       cmis_account_owner_real_name = :cmisAccountOwnerRealName 
+                   WHERE cmis_account_id = :cmisAccountId
+                  ");
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'cmisAccountId' => $account->cmisAccountId,
+            'cmisAccountName'=>$account->cmisAccountName,
+            'cmisAccountCurrentPassword'=>$account->cmisAccountCurrentPassword,
+            'cmisAccountNewPassword'=>$account->cmisAccountNewPassword,
+            'cmisAccountRealName'=>$account->cmisAccountOwnerRealName
+        ]);
+        return $account->cmisAccountId;
     }
 
     /**

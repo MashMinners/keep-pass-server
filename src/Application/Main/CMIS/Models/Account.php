@@ -6,11 +6,11 @@ use Engine\Exceptions\UnknownPropertyException;
 
 class Account implements \JsonSerializable
 {
-    private $cmisAccountId;
-    private $cmisAccountName;
-    private $cmisAccountCurrentPassword;
-    private $cmisAccountNewPassword;
-    private $cmisAccountOwnerRealName;
+    private string|null $cmisAccountId;
+    private string|null $cmisAccountName;
+    private string|null $cmisAccountCurrentPassword;
+    private string|null $cmisAccountNewPassword;
+    private string|null $cmisAccountOwnerRealName;
 
     public function __get($name){
         if (property_exists($this, $property = $name)){
@@ -36,6 +36,16 @@ class Account implements \JsonSerializable
             'cmisAccountNewPassword' => $this->cmisAccountNewPassword,
             'cmisAccountOwnerRealName' => $this->cmisAccountOwnerRealName,
         ];
+    }
+
+    public function init(){
+        $json = file_get_contents('php://input');
+        $credentials = json_decode($json);
+        $this->cmisAccountId = $credentials->cmisAccountId ?? null;
+        $this->cmisAccountName = $credentials->cmisAccountName;
+        $this->cmisAccountCurrentPassword = $credentials->cmisAccountCurrentPassword;
+        $this->cmisAccountNewPassword = $credentials->cmisAccountNewPassword ?? null;
+        $this->cmisAccountOwnerRealName = $credentials->cmisAccountOwnerRealName;
     }
 
 }
