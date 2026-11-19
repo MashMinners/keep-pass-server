@@ -45,8 +45,10 @@ class AccountManagerController
         return new JsonResponse($result);
     }
 
-    public function edit(ServerRequestInterface $request) : ResponseInterface {
-
+    public function update(ServerRequestInterface $request) : ResponseInterface {
+        $account = $request->getAttribute('Account');
+        $this->manager->update($account);
+        return new JsonResponse("Аккаунт $account->cmisAccountName обвновлен. ID $account->cmisAccountId");
     }
 
     public function delete(ServerRequestInterface $request) : ResponseInterface {

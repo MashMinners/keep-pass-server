@@ -14,8 +14,12 @@ $this->post('app/accounts/create/from-app', 'Application\Main\CMIS\Controllers\A
         \Application\Main\CMIS\Middlewares\AccountValidatorMiddleware::class,
 
     ]);
-$this->get('app/accounts/passwords/generate/for-all', 'Application\Main\CMIS\Controllers\PasswordGeneratorController::generateForAll');
+$this->put('app/accounts/update', 'Application\Main\CMIS\Controllers\AccountManagerController::update')
+    ->lazyMiddlewares([
+        \Application\Main\CMIS\Middlewares\AccountValidatorMiddleware::class,
+    ]);
 $this->delete('app/accounts/delete', 'Application\Main\CMIS\Controllers\AccountManagerController::delete');
+$this->get('app/accounts/passwords/generate/for-all', 'Application\Main\CMIS\Controllers\PasswordGeneratorController::generateForAll');
 $this->get('app/accounts/read-all', 'Application\Main\CMIS\Controllers\AccountManagerController::readAll');
 #EXCEL GENERATOR
 $this->get('app/excel-generator/generate/all-accounts-file', 'Application\Main\CMIS\Controllers\ExcelGeneratorController::generateAllAccountsFile');

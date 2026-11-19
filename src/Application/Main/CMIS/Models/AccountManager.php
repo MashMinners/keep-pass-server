@@ -103,6 +103,7 @@ class AccountManager
      * Обновляет учетные записи на основе массива с их ID
      */
     public function update(Account $account) : string{
+        $key = Keygen::get('configs/key');
         $query = ("UPDATE cmis_accounts
                    SET cmis_account_name = :cmisAccountName,
                        cmis_account_current_password = :cmisAccountCurrentPassword,
@@ -114,9 +115,9 @@ class AccountManager
         $stmt->execute([
             'cmisAccountId' => $account->cmisAccountId,
             'cmisAccountName'=>$account->cmisAccountName,
-            'cmisAccountCurrentPassword'=>$account->cmisAccountCurrentPassword,
-            'cmisAccountNewPassword'=>$account->cmisAccountNewPassword,
-            'cmisAccountRealName'=>$account->cmisAccountOwnerRealName
+            'cmisAccountCurrentPassword'=>Sodium::encryptPassword($account->cmisAccountCurrentPassword, $key),
+            'cmisAccountNewPassword'=>Sodium::encryptPassword($account->cmisAccountNewPassword, $key),
+            'cmisAccountOwnerRealName'=>$account->cmisAccountOwnerRealName
         ]);
         return $account->cmisAccountId;
     }
